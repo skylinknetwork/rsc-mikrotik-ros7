@@ -1,3 +1,6 @@
+# Rubah nama mikrotik
+/system identity set name="Asus Board"
+
 # Buat bridge
 /interface bridge
 add name=bridge1-LAN
@@ -17,3 +20,40 @@ add address=10.10.17.1/24 interface=bridge1-LAN comment="==> Client 20MB"
 add address=10.10.18.1/24 interface=bridge1-LAN comment="==> Client 35MB"
 add address=10.10.19.1/24 interface=bridge1-LAN comment="==> Client 50MB"
 add address=10.10.20.1/24 interface=bridge1-LAN comment="==> Client 100MB"
+
+# Tambah Queue Type 
+/queue type
+add name=cake kind=cake
+add name=pcq-5M  kind=pcq pcq-rate=5M  pcq-classifier=src-address,dst-address pcq-limit=64 pcq-total-limit=2048
+add name=pcq-6M  kind=pcq pcq-rate=6M  pcq-classifier=src-address,dst-address pcq-limit=64 pcq-total-limit=2048
+add name=pcq-7M  kind=pcq pcq-rate=7M  pcq-classifier=src-address,dst-address pcq-limit=64 pcq-total-limit=2048
+add name=pcq-8M  kind=pcq pcq-rate=8M  pcq-classifier=src-address,dst-address pcq-limit=64 pcq-total-limit=2048
+add name=pcq-9M  kind=pcq pcq-rate=9M  pcq-classifier=src-address,dst-address pcq-limit=64 pcq-total-limit=2048
+add name=pcq-10M kind=pcq pcq-rate=10M pcq-classifier=src-address,dst-address pcq-limit=64 pcq-total-limit=2048
+add name=pcq-12M kind=pcq pcq-rate=12M pcq-classifier=src-address,dst-address pcq-limit=64 pcq-total-limit=2048
+
+# Buat Simple Queue
+/queue simple
+add name="Distribusi" target=10.10.0.0/16,10.20.20.0/24 parent=none queue=cake/cake
+add name="Client 10MB" target=10.10.8.0/21  parent="Distribusi" queue=cake/cake
+add name="Client 15MB" target=10.10.16.0/24 parent="Distribusi" queue=cake/cake
+add name="Client 20MB" target=10.10.17.0/24 parent="Distribusi" queue=cake/cake
+add name="Client 35MB" target=10.10.18.0/24 parent="Distribusi" queue=cake/cake
+add name="Client 50MB" target=10.10.19.0/24 parent="Distribusi" queue=cake/cake
+add name="Client 100MB" target=10.10.20.0/24 parent="Distribusi" queue=cake/cake
+add name="Client Hotspot" target=10.20.20.0/24 parent="Distribusi" queue=cake/cake
+add name="Zero End" target=250.250.250.250/32 parent="Distribusi" queue=cake/cake
+
+# Set DNS Server
+/ip dns
+set servers=1.1.1.1,1.0.0.1 allow-remote-requests=yes
+
+# Buat IP Pool
+/ip pool
+add name=Pool_PPPOE_10MB  ranges=10.10.15.100-10.10.15.254,10.10.14.100-10.10.14.254,10.10.13.100-10.10.13.254,10.10.12.100-10.10.12.254
+add name=Pool_PPPOE_15MB  ranges=10.10.16.100-10.10.16.254
+add name=Pool_PPPOE_20MB  ranges=10.10.17.100-10.10.17.254
+add name=Pool_PPPOE_35MB  ranges=10.10.18.100-10.10.18.254
+add name=Pool_PPPOE_50MB  ranges=10.10.19.100-10.10.19.254
+add name=Pool_PPPOE_100MB ranges=10.10.20.100-10.10.20.254
+add name=Pool_Hotspot     ranges=10.20.20.21-10.20.20.250
