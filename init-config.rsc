@@ -57,3 +57,30 @@ add name=Pool_PPPOE_35MB  ranges=10.10.18.100-10.10.18.254
 add name=Pool_PPPOE_50MB  ranges=10.10.19.100-10.10.19.254
 add name=Pool_PPPOE_100MB ranges=10.10.20.100-10.10.20.254
 add name=Pool_Hotspot     ranges=10.20.20.21-10.20.20.250
+
+# Set NTP Client
+/system ntp client
+set enabled=yes mode=unicast
+
+/system ntp client servers
+add address=0.id.pool.ntp.org
+add address=1.id.pool.ntp.org
+add address=2.id.pool.ntp.org
+
+# Set Clock
+/system clock
+set time-zone-autodetect=yes
+set time-zone-name=Asia/Jakarta
+
+# Set Firewall Masquerade Global
+/ip firewall nat
+add chain=srcnat action=masquerade
+
+# Buat Address List Client
+/ip firewall address-list
+add list=IP-CLIENT address=10.0.0.0/8
+add list=IP-PPPOE  address=10.10.0.0/16
+
+# Filter Rule: drop koneksi invalid di chain input
+/ip firewall filter
+add chain=input connection-state=invalid action=drop comment="Drop invalid input"
