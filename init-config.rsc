@@ -83,4 +83,5 @@ add list=IP-PPPOE  address=10.10.0.0/16
 
 # Filter Rule: drop koneksi invalid di chain input
 /ip firewall filter
-add chain=input connection-state=invalid action=drop comment="Drop invalid input"
+add chain=input connection-state=invalid action=drop comment="===> Drop invalid input"
+add chain=input in-interface=ether1 protocol=udp dst-port=53 action=drop comment="===> Block DNS (UDP 53) WAN"
