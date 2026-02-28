@@ -5,6 +5,14 @@
 /ipv6 settings
 set disable-ipv6=yes
 
+# Tambah ether1 sebagai DHCP Client
+/ip dhcp-client
+add interface=ether1 use-peer-dns=yes use-peer-ntp=no add-default-route=yes
+
+# Set Firewall Masquerade Global
+/ip firewall nat
+add chain=srcnat action=masquerade
+
 # Buat bridge
 /interface bridge
 add name=bridge1-LAN
@@ -62,6 +70,16 @@ add name=Pool_PPPOE_50MB  ranges=10.10.19.100-10.10.19.254
 add name=Pool_PPPOE_100MB ranges=10.10.20.100-10.10.20.254
 add name=Pool_Hotspot     ranges=10.20.20.21-10.20.20.250
 
+# Buat Address List Client
+/ip firewall address-list
+add list=IP-CLIENT address=10.0.0.0/8
+add list=IP-PPPOE  address=10.10.0.0/16
+
+# Filter Rule: drop koneksi invalid di chain input
+/ip firewall filter
+add chain=input connection-state=invalid action=drop comment="===> Drop invalid input"
+add chain=input in-interface=ether1 protocol=udp dst-port=53 action=drop comment="===> Block DNS (UDP 53) WAN"
+
 # Set NTP Client
 /system ntp client
 set enabled=yes mode=unicast
@@ -75,17 +93,3 @@ add address=2.id.pool.ntp.org
 /system clock
 set time-zone-autodetect=yes
 set time-zone-name=Asia/Jakarta
-
-# Set Firewall Masquerade Global
-/ip firewall nat
-add chain=srcnat action=masquerade
-
-# Buat Address List Client
-/ip firewall address-list
-add list=IP-CLIENT address=10.0.0.0/8
-add list=IP-PPPOE  address=10.10.0.0/16
-
-# Filter Rule: drop koneksi invalid di chain input
-/ip firewall filter
-add chain=input connection-state=invalid action=drop comment="===> Drop invalid input"
-add chain=input in-interface=ether1 protocol=udp dst-port=53 action=drop comment="===> Block DNS (UDP 53) WAN"
