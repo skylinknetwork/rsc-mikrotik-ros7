@@ -1,6 +1,10 @@
 # Rubah nama mikrotik
 /system identity set name="Asus Board"
 
+# Disable ipv6
+/ipv6 settings
+set disable-ipv6=yes
+
 # Buat bridge
 /interface bridge
 add name=bridge1-LAN
