@@ -93,5 +93,3 @@ add address=2.id.pool.ntp.org
 /system clock
 set time-zone-autodetect=yes
 set time-zone-name=Asia/Jakarta
-
-/system reboot
