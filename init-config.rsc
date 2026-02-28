@@ -9,6 +9,10 @@ set disable-ipv6=yes
 /ip dhcp-client
 add interface=ether1 use-peer-dns=yes use-peer-ntp=no add-default-route=yes
 
+# Set DNS Server
+/ip dns
+set servers=1.1.1.1,1.0.0.1 allow-remote-requests=yes
+
 # Set Firewall Masquerade Global
 /ip firewall nat
 add chain=srcnat action=masquerade
@@ -55,10 +59,6 @@ add name="Client 50MB" target=10.10.19.0/24 parent="Distribusi" queue=cake/cake
 add name="Client 100MB" target=10.10.20.0/24 parent="Distribusi" queue=cake/cake
 add name="Client Hotspot" target=10.20.20.0/24 parent="Distribusi" queue=cake/cake
 add name="Zero End" target=250.250.250.250/32 parent="Distribusi" queue=cake/cake
-
-# Set DNS Server
-/ip dns
-set servers=1.1.1.1,1.0.0.1 allow-remote-requests=yes
 
 # Buat IP Pool
 /ip pool
