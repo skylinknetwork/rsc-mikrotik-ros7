@@ -10,8 +10,12 @@ set disable-ipv6=yes
 add interface=ether1 use-peer-dns=yes use-peer-ntp=no add-default-route=yes
 
 # Set DNS Server
-/ip dns
-set servers=1.1.1.1,1.0.0.1 allow-remote-requests=yes
+/ip dns set \
+    servers=1.1.1.1,1.0.0.1 \
+    allow-remote-requests=yes \
+    max-concurrent-queries=300 \
+    max-concurrent-tcp-sessions=50 \
+    cache-size=65536
 
 # Set Firewall Masquerade Global
 /ip firewall nat
