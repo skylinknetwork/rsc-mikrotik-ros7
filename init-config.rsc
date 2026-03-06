@@ -15,7 +15,8 @@ add interface=ether1 use-peer-dns=yes use-peer-ntp=no add-default-route=yes
     allow-remote-requests=yes \
     max-concurrent-queries=300 \
     max-concurrent-tcp-sessions=50 \
-    cache-size=65536
+    cache-size=65536 \
+    cache-max-ttl=1d
 
 # Set Firewall Masquerade Global
 /ip firewall nat
