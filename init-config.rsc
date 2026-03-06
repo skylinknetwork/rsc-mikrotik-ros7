@@ -21,12 +21,16 @@ add chain=srcnat action=masquerade
 /interface bridge
 add name=bridge1-LAN
 
-# Masukkan ether2–ether5 ke bridge
-/interface bridge port
-add bridge=bridge1-LAN interface=ether2
-add bridge=bridge1-LAN interface=ether3
-add bridge=bridge1-LAN interface=ether4
-add bridge=bridge1-LAN interface=ether5
+# Masukkan selain ether1 ke bridge1-LAN
+{
+:local br "bridge1-LAN"
+:foreach i in=[/interface ethernet find] do={
+    :local name [/interface ethernet get $i name]
+    :if ($name != "ether1") do={
+        /interface bridge port add bridge=$br interface=$name
+    }
+}
+}
 
 # Set IP Address ke bridge1-LAN
 /ip address
